@@ -154,7 +154,7 @@ func executeStep(
 	log.Debug("")
 	log.Debug("Executing step to be inserted in ", step.ParentType, ". Insertion point: ", insertionPoint)
 
-	log.Debug(step.SelectionSet)
+	log.Debug(fmt.Sprintf("%q", step.SelectionSet))
 
 	// log the query
 	log.QueryPlanStep(step)
@@ -346,9 +346,9 @@ func executorFindInsertionPoints(resultLock *sync.Mutex, targetPoints []string, 
 			return [][]string{}, nil
 		}
 
-		log.Debug("")
+		log.Warn("")
 		log.Debug("Found Selection for: ", point)
-		log.Debug("Result Chunk: ", resultChunk)
+		log.Warn("Result Chunk: ", resultChunk)
 		// make sure we are looking at the top of the selection set next time
 		selectionSetRoot = foundSelection.SelectionSet
 
@@ -365,7 +365,7 @@ func executorFindInsertionPoints(resultLock *sync.Mutex, targetPoints []string, 
 
 		// if the type is a list
 		if selectionType.Elem != nil {
-			log.Debug("Selection should be a list")
+			log.Warn("Selection should be a list")
 			// make sure the root value is a list
 			rootList, ok := rootValue.([]interface{})
 			if !ok {
@@ -384,7 +384,7 @@ func executorFindInsertionPoints(resultLock *sync.Mutex, targetPoints []string, 
 
 				// the point we are going to add to the list
 				entryPoint := fmt.Sprintf("%s:%v", foundSelection.Name, entryI)
-				log.Debug("Adding ", entryPoint, " to list")
+				log.Warn("Adding ", entryPoint, " to list")
 
 				newBranchSet := make([][]string, len(oldBranch))
 				copy(newBranchSet, oldBranch)

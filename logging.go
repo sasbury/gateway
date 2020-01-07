@@ -147,7 +147,7 @@ func newLogEntry() *logrus.Entry {
 
 	return logrus.NewEntry(entry)
 }
+
 func init() {
 	log = &Logger{}
-
 }

@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 	"net/http"
+	"net/http/httputil"
 
 	graphql "github.com/graph-gophers/graphql-go"
 	"github.com/graph-gophers/graphql-go/relay"
@@ -19,7 +20,7 @@ var Schema = `
 
 	type User implements Node {
 		id: ID!
-		firstName: String!
+		name: String!
 	}
 
 	type Query {
@@ -30,9 +31,13 @@ var Schema = `
 
 // the users by id
 var users = map[string]*User{
-	"1": {
-		id:        "1",
-		firstName: "Alec",
+	"u1": {
+		id:        "u1",
+		name: "Alec",
+	},
+	"u2": {
+		id:        "u2",
+		name: "Stephen",
 	},
 }
 
@@ -40,15 +45,15 @@ var users = map[string]*User{
 
 type User struct {
 	id        graphql.ID
-	firstName string
+	name string
 }
 
 func (u *User) ID() graphql.ID {
 	return u.id
 }
 
-func (u *User) FirstName() string {
-	return u.firstName
+func (u *User) Name() string {
+	return u.name
 }
 
 type Node interface {
@@ -76,8 +81,10 @@ func (q *queryA) Node(args struct{ ID string }) *NodeResolver {
 	user := users[args.ID]
 
 	if user != nil {
+		log.Printf("Returning user %q\n", user)
 		return &NodeResolver{user}
 	} else {
+		log.Printf("No user matched %q\n", args.ID)
 		return nil
 	}
 }
@@ -90,6 +97,8 @@ func (q *queryA) AllUsers() []*User {
 		userSlice = append(userSlice, user)
 	}
 
+	log.Printf("Returning %d users %q\n", len(userSlice), userSlice)
+
 	return userSlice
 }
 
@@ -98,7 +107,16 @@ func main() {
 	schema := graphql.MustParseSchema(Schema, &queryA{})
 
 	// make sure we add the user info to the execution context
-	http.Handle("/", &relay.Handler{Schema: schema})
+	relayH := &relay.Handler{Schema: schema}
+	http.HandleFunc("/", func(rw http.ResponseWriter, req *http.Request){
+		requestDump, err := httputil.DumpRequest(req, true)
+		if err != nil {
+			log.Println(err)
+		}
+		log.Println(string(requestDump))
+		relayH.ServeHTTP(rw, req)
+	})
 
+	log.Println("Users fragment running on port 8080")
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }

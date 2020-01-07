@@ -253,6 +253,8 @@ func (p *MinQueriesPlanner) generatePlans(ctx *PlanningContext, query *ast.Query
 						continue SelectLoop
 					}
 
+					//log.Warn(queryString)
+
 					step.QueryString = queryString
 
 					// we're done processing this step
