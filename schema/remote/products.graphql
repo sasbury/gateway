@@ -1,0 +1,23 @@
+schema {
+    query: Query
+}
+
+interface Node {
+    id: ID!
+}
+
+type User implements Node {
+    id: ID!
+    recentPurchases: [Product]
+}
+
+type Product implements Node {
+    id: ID!
+    name: String!
+    price: String!
+}
+
+type Query {
+    node(id: ID!): Node
+    allProducts: [Product!]!
+}

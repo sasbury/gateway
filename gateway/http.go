@@ -5,15 +5,18 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/joho/godotenv"
 	"github.com/nautilus/gateway"
-	"github.com/nautilus/graphql"
 )
 
 func ListenAndServe(services []string) {
+
+	godotenv.Load()
+
 	// introspect the schemas
-	schemas, err := graphql.IntrospectRemoteSchemas(services...)
+	schemas, err := ParseRemoteSchemas()
 	if err != nil {
-		fmt.Println("Encountered error introspecting schemas:", err.Error())
+		fmt.Println("Encountered error parsing schemas:", err.Error())
 		os.Exit(1)
 	}
 
