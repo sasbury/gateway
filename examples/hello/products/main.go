@@ -18,12 +18,12 @@ var Schema = `
 		id: ID!
 	}
 
-	type User implements Node {
+	type UserUser implements Node {
 		id: ID!
-		recentPurchases: [Product]
+		recentPurchases: [ProductProduct]
 	}
 
-	type Product implements Node {
+	type ProductProduct implements Node {
 		id: ID!
 		name: String!
 		price: String!
@@ -31,54 +31,54 @@ var Schema = `
 
 	type Query {
 		node(id: ID!): Node
-		allProducts: [Product!]!
+		allProducts: [ProductProduct!]!
 	}
 `
 
 // the products by id
-var products = map[string]*Product{
+var products = map[string]*ProductProduct{
 	"p1": {
-		id:       "p1",
-		name: "Tide",
+		id:    "p1",
+		name:  "Tide",
 		price: "12.2",
 	},
 	"p2": {
-		id:       "p2",
-		name: "Cheer",
+		id:    "p2",
+		name:  "Cheer",
 		price: "11.1",
 	},
 }
 
-type User struct {
-	id        graphql.ID
-	recentPurchases []*Product
+type UserUser struct {
+	id              graphql.ID
+	recentPurchases []*ProductProduct
 }
 
-func (u *User) ID() graphql.ID {
+func (u *UserUser) ID() graphql.ID {
 	return u.id
 }
 
-func (u *User) RecentPurchases() *[]*Product {
+func (u *UserUser) RecentPurchases() *[]*ProductProduct {
 	return &u.recentPurchases
 }
 
 // type resolvers
 
-type Product struct {
-	id       graphql.ID
-	name string
+type ProductProduct struct {
+	id    graphql.ID
+	name  string
 	price string
 }
 
-func (u *Product) ID() graphql.ID {
+func (u *ProductProduct) ID() graphql.ID {
 	return u.id
 }
 
-func (u *Product) Name() string {
+func (u *ProductProduct) Name() string {
 	return u.name
 }
 
-func (u *Product) Price() string {
+func (u *ProductProduct) Price() string {
 	return u.price
 }
 
@@ -94,13 +94,13 @@ func (n *NodeResolver) ID() graphql.ID {
 	return n.node.ID()
 }
 
-func (n *NodeResolver) ToProduct() (*Product, bool) {
-	Product, ok := n.node.(*Product)
+func (n *NodeResolver) ToProductProduct() (*ProductProduct, bool) {
+	Product, ok := n.node.(*ProductProduct)
 	return Product, ok
 }
 
-func (n *NodeResolver) ToUser() (*User, bool) {
-	user, ok := n.node.(*User)
+func (n *NodeResolver) ToUserUser() (*UserUser, bool) {
+	user, ok := n.node.(*UserUser)
 	return user, ok
 }
 
@@ -127,7 +127,7 @@ func (q *queryB) Node(args struct{ ID string }) *NodeResolver {
 	return nil
 }
 
-func (q *queryB) getProduct(id string) *Product {
+func (q *queryB) getProduct(id string) *ProductProduct {
 	product := products[id]
 
 	if product != nil {
@@ -139,8 +139,8 @@ func (q *queryB) getProduct(id string) *Product {
 	}
 }
 
-func (q *queryB) getUser(id string ) *User {
-	productSlice := []*Product{}
+func (q *queryB) getUser(id string) *UserUser {
+	productSlice := []*ProductProduct{}
 
 	if id == "u1" {
 		for _, product := range products {
@@ -150,14 +150,14 @@ func (q *queryB) getUser(id string ) *User {
 
 	log.Printf("Returning %d products for user %s\n", len(productSlice), id)
 
-	return &User{
-		id: graphql.ID(id),
+	return &UserUser{
+		id:              graphql.ID(id),
 		recentPurchases: productSlice,
 	}
 }
 
-func (q *queryB) AllProducts() []*Product {
-	productSlice := []*Product{}
+func (q *queryB) AllProducts() []*ProductProduct {
+	productSlice := []*ProductProduct{}
 
 	for _, product := range products {
 		productSlice = append(productSlice, product)
@@ -174,7 +174,7 @@ func main() {
 
 	// make sure we add the Product info to the execution context
 	relayH := &relay.Handler{Schema: schema}
-	http.HandleFunc("/", func(rw http.ResponseWriter, req *http.Request){
+	http.HandleFunc("/", func(rw http.ResponseWriter, req *http.Request) {
 		requestDump, err := httputil.DumpRequest(req, true)
 		if err != nil {
 			log.Println(err)

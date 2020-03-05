@@ -6,12 +6,12 @@ interface Node {
     id: ID!
 }
 
-type User implements Node {
+type UserUser implements Node {
     id: ID!
-    recentPurchases: [Product]
+    recentPurchases: [ProductProduct]
 }
 
-type Product implements Node {
+type ProductProduct implements Node {
     id: ID!
     name: String!
     price: String!
@@ -19,5 +19,5 @@ type Product implements Node {
 
 type Query {
     node(id: ID!): Node
-    allProducts: [Product!]!
+    allProducts: [ProductProduct!]!
 }

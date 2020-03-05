@@ -18,41 +18,41 @@ var Schema = `
 		id: ID!
 	}
 
-	type User implements Node {
+	type UserUser implements Node {
 		id: ID!
 		name: String!
 	}
 
 	type Query {
 		node(id: ID!): Node
-		allUsers: [User!]!
+		allUsers: [UserUser!]!
 	}
 `
 
 // the users by id
-var users = map[string]*User{
+var users = map[string]*UserUser{
 	"u1": {
-		id:        "u1",
+		id:   "u1",
 		name: "Alec",
 	},
 	"u2": {
-		id:        "u2",
+		id:   "u2",
 		name: "Stephen",
 	},
 }
 
 // type resolvers
 
-type User struct {
-	id        graphql.ID
+type UserUser struct {
+	id   graphql.ID
 	name string
 }
 
-func (u *User) ID() graphql.ID {
+func (u *UserUser) ID() graphql.ID {
 	return u.id
 }
 
-func (u *User) Name() string {
+func (u *UserUser) Name() string {
 	return u.name
 }
 
@@ -68,8 +68,8 @@ func (n *NodeResolver) ID() graphql.ID {
 	return n.node.ID()
 }
 
-func (n *NodeResolver) ToUser() (*User, bool) {
-	user, ok := n.node.(*User)
+func (n *NodeResolver) ToUserUser() (*UserUser, bool) {
+	user, ok := n.node.(*UserUser)
 	return user, ok
 }
 
@@ -89,9 +89,9 @@ func (q *queryA) Node(args struct{ ID string }) *NodeResolver {
 	}
 }
 
-func (q *queryA) AllUsers() []*User {
+func (q *queryA) AllUsers() []*UserUser {
 	// build up a list of all the users
-	userSlice := []*User{}
+	userSlice := []*UserUser{}
 
 	for _, user := range users {
 		userSlice = append(userSlice, user)
@@ -108,7 +108,7 @@ func main() {
 
 	// make sure we add the user info to the execution context
 	relayH := &relay.Handler{Schema: schema}
-	http.HandleFunc("/", func(rw http.ResponseWriter, req *http.Request){
+	http.HandleFunc("/", func(rw http.ResponseWriter, req *http.Request) {
 		requestDump, err := httputil.DumpRequest(req, true)
 		if err != nil {
 			log.Println(err)
