@@ -18,19 +18,19 @@ var Schema = `
 		id: ID!
 	}
 
-	type UserUser implements Node {
+	type User implements Node {
 		id: ID!
 		name: String!
 	}
 
 	type Query {
 		node(id: ID!): Node
-		allUsers: [UserUser!]!
+		allUsers: [User!]!
 	}
 `
 
 // the users by id
-var users = map[string]*UserUser{
+var users = map[string]*User{
 	"u1": {
 		id:   "u1",
 		name: "Alec",
@@ -43,16 +43,16 @@ var users = map[string]*UserUser{
 
 // type resolvers
 
-type UserUser struct {
+type User struct {
 	id   graphql.ID
 	name string
 }
 
-func (u *UserUser) ID() graphql.ID {
+func (u *User) ID() graphql.ID {
 	return u.id
 }
 
-func (u *UserUser) Name() string {
+func (u *User) Name() string {
 	return u.name
 }
 
@@ -68,8 +68,8 @@ func (n *NodeResolver) ID() graphql.ID {
 	return n.node.ID()
 }
 
-func (n *NodeResolver) ToUserUser() (*UserUser, bool) {
-	user, ok := n.node.(*UserUser)
+func (n *NodeResolver) ToUser() (*User, bool) {
+	user, ok := n.node.(*User)
 	return user, ok
 }
 
@@ -89,9 +89,9 @@ func (q *queryA) Node(args struct{ ID string }) *NodeResolver {
 	}
 }
 
-func (q *queryA) AllUsers() []*UserUser {
+func (q *queryA) AllUsers() []*User {
 	// build up a list of all the users
-	userSlice := []*UserUser{}
+	userSlice := []*User{}
 
 	for _, user := range users {
 		userSlice = append(userSlice, user)

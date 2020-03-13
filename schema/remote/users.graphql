@@ -6,12 +6,12 @@ interface Node {
     id: ID!
 }
 
-type UserUser implements Node {
+type User implements Node {
     id: ID!
     name: String!
 }
 
 type Query {
     node(id: ID!): Node
-    allUsers: [UserUser!]!
+    allUsers: [User!]!
 }

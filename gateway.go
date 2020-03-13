@@ -16,6 +16,7 @@ import (
 // that plan
 type Gateway struct {
 	sources        []*graphql.RemoteSchema
+	legacySource   *graphql.RemoteSchema
 	schema         *ast.Schema
 	planner        QueryPlanner
 	executor       Executor
@@ -40,7 +41,6 @@ type RequestContext struct {
 	Variables map[string]interface{}
 	CacheKey  string
 }
-
 
 func (g *Gateway) GetPlan(ctx *RequestContext) ([]*QueryPlan, error) {
 	// let the persister grab the plan for us
@@ -98,7 +98,7 @@ func (g *Gateway) internalSchema() *ast.Schema {
 }
 
 // New instantiates a new schema with the required stuffs.
-func New(sources []*graphql.RemoteSchema, configs ...Option) (*Gateway, error) {
+func New(sources []*graphql.RemoteSchema, legacySource *graphql.RemoteSchema, configs ...Option) (*Gateway, error) {
 	// if there are no source schemas
 	if len(sources) == 0 {
 		return nil, errors.New("a gateway must have at least one schema")
@@ -107,6 +107,7 @@ func New(sources []*graphql.RemoteSchema, configs ...Option) (*Gateway, error) {
 	// set any default values before we start doing stuff with it
 	gateway := &Gateway{
 		sources:        sources,
+		legacySource:   legacySource,
 		planner:        &MinQueriesPlanner{},
 		executor:       &ParallelExecutor{},
 		merger:         MergerFunc(mergeSchemas),

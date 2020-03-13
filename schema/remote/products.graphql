@@ -6,7 +6,7 @@ interface Node {
     id: ID!
 }
 
-type UserUser implements Node {
+type User implements Node {
     id: ID!
     recentPurchases: [ProductProduct]
 }
