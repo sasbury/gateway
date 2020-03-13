@@ -14,14 +14,14 @@ func ListenAndServe(services []string) {
 	godotenv.Load()
 
 	// introspect the schemas
-	schemas, err := ParseRemoteSchemas()
+	schemas, legacySchema, err := ParseRemoteSchemas()
 	if err != nil {
 		fmt.Println("Encountered error parsing schemas:", err.Error())
 		os.Exit(1)
 	}
 
 	// create the gateway instance
-	gw, err := gateway.New(schemas)
+	gw, err := gateway.New(schemas, legacySchema)
 	if err != nil {
 		fmt.Println("Encountered error starting gateway:", err.Error())
 		os.Exit(1)
