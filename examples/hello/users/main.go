@@ -26,6 +26,7 @@ var Schema = `
 	type Query {
 		node(id: ID!): Node
 		allUsers: [User!]!
+		getUserById(userId: ID!): User!
 	}
 `
 
@@ -100,6 +101,13 @@ func (q *queryA) AllUsers() []*User {
 	log.Printf("Returning %d users %q\n", len(userSlice), userSlice)
 
 	return userSlice
+}
+
+func (q *queryA) GetUserById(args struct{ UserId string }) *User {
+	// return a user
+	user := users["u1"]
+
+	return user
 }
 
 func main() {
