@@ -6,6 +6,45 @@ A standalone service designed to consolidate your graphql APIs into one endpoint
 
 For a guide to getting started read [this post](https://medium.com/@aaivazis/a-guide-to-schema-federation-part-1-995b639ac035). For full documentation visit the [gateway homepage](https://gateway.nautilus.dev).
 
+## Testing Locally
+
+To test this service locally, run internal-api-gateway along with supporting test services, then run the nautilus gateway executable.
+
+
+To startup internal-api-gateway:
+```bash
+honey-dev startup internal-api-gateway --mode=forward
+```
+To startup products and users test servers:
+```bash
+cd GATEWAY_ROOT/examples/users
+go run main.go
+
+cd GATEWAY_ROOT/examples/products
+go run main.go
+```
+
+To install the nautilus gateway executable:
+
+```bash
+cd GATEWAY_ROOT/gateway
+go install
+```
+
+To run it:
+
+```bash
+gateway start --port=4000
+```
+
+OR, if your Go binary folder is not in your PATH:
+
+```bash
+$GOPATH/bin/gateway start --port=4000
+```
+
+More info on running the gateway executable below :)
+
 ## Running the Executable
 
 The simplest way to run a gateway is to download the executable
@@ -23,5 +62,5 @@ arguments to pass the executable, run `./gateway --help`.
 ## Versioning
 
 This project is built as a go module and follows the practices outlined in the [spec](https://github.com/golang/go/wiki/Modules). Please consider all APIs experimental and subject
-to change until v1 has been released at which point semantic versioning will be strictly followed. Before 
+to change until v1 has been released at which point semantic versioning will be strictly followed. Before
 then, minor version bumps denote an API breaking change.

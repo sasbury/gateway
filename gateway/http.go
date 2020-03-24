@@ -9,7 +9,7 @@ import (
 	"github.com/nautilus/gateway"
 )
 
-func ListenAndServe(services []string) {
+func ListenAndServe() {
 	godotenv.Load()
 
 	// introspect the schemas
