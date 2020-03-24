@@ -1,0 +1,23 @@
+schema {
+    query: Query
+}
+
+interface Node {
+    id: ID!
+}
+
+type RemoteUser implements Node {
+    id: ID!
+    recentPurchases: [ProductProduct]
+}
+
+type ProductProduct implements Node {
+    id: ID!
+    name: String!
+    price: String!
+}
+
+type Query {
+    node(id: ID!): Node
+    allProducts: [ProductProduct!]!
+}

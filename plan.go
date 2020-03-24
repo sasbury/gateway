@@ -253,8 +253,6 @@ func (p *MinQueriesPlanner) generatePlans(ctx *PlanningContext, query *ast.Query
 						continue SelectLoop
 					}
 
-					//log.Warn(queryString)
-
 					step.QueryString = queryString
 
 					// we're done processing this step
@@ -635,23 +633,28 @@ FieldLoop:
 				locationFields[possibleLocations[0]] = append(locationFields[possibleLocations[0]], field)
 				// the field can be found in many locations
 			} else {
-				// locations to prioritize first
-				for _, priority := range []string{config.parentLocation, internalSchemaLocation} {
-					// look to see if the current location is one of the possible locations
-					for _, location := range possibleLocations {
-						// if the location is the same as the parent
-						if location == priority {
-							// assign this field to the parents entry
-							locationFields[priority] = append(locationFields[priority], field)
-							// we're done with this field
-							continue FieldLoop
-						}
+				// location to prioritize first
+				priority := config.parentLocation
+				// look to see if the current location is one of the possible locations
+				for _, location := range possibleLocations {
+					// if the location is the same as the parent
+					if location == priority {
+						// assign this field to the parents entry
+						locationFields[priority] = append(locationFields[priority], field)
+						// we're done with this field
+						continue FieldLoop
 					}
 				}
 
 				// if we got here then this field can be found in multiple services and none of the top priority locations.
 				// for now, just use the first one
-				locationFields[possibleLocations[0]] = append(locationFields[possibleLocations[0]], field)
+
+				// do not use internalSchemaLocation if there are multiple possible locations
+				location := possibleLocations[0]
+				if location == internalSchemaLocation {
+					location = possibleLocations[1]
+				}
+				locationFields[location] = append(locationFields[location], field)
 			}
 
 		case *ast.FragmentSpread:
@@ -877,10 +880,6 @@ func (set Set) Has(k string) bool {
 
 // GetQueryer returns the queryer that should be used to resolve the plan
 func (p *Planner) GetQueryer(ctx *PlanningContext, url string) graphql.Queryer {
-	// if we are looking to query the local schema
-	if url == internalSchemaLocation {
-		return ctx.Gateway
-	}
 
 	// if there is a queryer factory defined
 	if p.QueryerFactory != nil {

@@ -41,7 +41,6 @@ type RequestContext struct {
 	CacheKey  string
 }
 
-
 func (g *Gateway) GetPlan(ctx *RequestContext) ([]*QueryPlan, error) {
 	// let the persister grab the plan for us
 	return g.queryPlanCache.Retrieve(&PlanningContext{

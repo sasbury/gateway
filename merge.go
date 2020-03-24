@@ -188,11 +188,6 @@ func mergeSchemas(sources []*ast.Schema) (*ast.Schema, error) {
 }
 
 func mergeInterfaces(schema *ast.Schema, previousDefinition *ast.Definition, newDefinition *ast.Definition) error {
-	// descriptions
-	if previousDefinition.Description != newDefinition.Description {
-		return fmt.Errorf("conflict in interface descriptions: \"%v\" and \"%v\"", previousDefinition.Description, newDefinition.Description)
-	}
-
 	// fields
 	if len(previousDefinition.Fields) != len(newDefinition.Fields) {
 		return fmt.Errorf("inconsistent number of fields")
@@ -388,11 +383,6 @@ func mergeFieldListEqual(list1, list2 ast.FieldList) error {
 }
 
 func mergeFieldsEqual(field1, field2 *ast.FieldDefinition) error {
-	// if the 2 descriptions don't match
-	if field1.Description != field2.Description {
-		return fmt.Errorf("conflict in field descriptions. Found \"%v\" and \"%v\"", field1.Description, field2.Description)
-	}
-
 	// fields
 	if err := mergeTypesEqual(field1.Type, field2.Type); err != nil {
 		return fmt.Errorf("fields are not equal: %v", err.Error())
@@ -517,11 +507,6 @@ func mergeArgumentDefinitionListEqual(list1, list2 ast.ArgumentDefinitionList) e
 }
 
 func mergeArgumentDefinitionsEqual(arg1 *ast.ArgumentDefinition, arg2 *ast.ArgumentDefinition) error {
-	// if the 2 descriptions are not the same
-	if arg1.Description != arg2.Description {
-		return errors.New("descriptions were not the same")
-	}
-
 	// check that the 2 types are equal
 	if err := mergeTypesEqual(arg1.Type, arg2.Type); err != nil {
 		return err

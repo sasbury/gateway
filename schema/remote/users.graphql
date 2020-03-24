@@ -1,0 +1,17 @@
+schema {
+    query: Query
+}
+
+interface Node {
+    id: ID!
+}
+
+type RemoteUser implements Node {
+    id: ID!
+    name: String!
+}
+
+type Query {
+    node(id: ID!): Node
+    allUsers: [RemoteUser!]!
+}

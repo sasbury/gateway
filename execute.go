@@ -217,7 +217,7 @@ func executeStep(
 		Variables:     variables,
 	}, &queryResult)
 	if err != nil {
-		log.Warn("Network Error: ", err)
+		log.Debug("Network Error: ", err)
 		errCh <- err
 		return
 	}
@@ -346,9 +346,9 @@ func executorFindInsertionPoints(resultLock *sync.Mutex, targetPoints []string, 
 			return [][]string{}, nil
 		}
 
-		log.Warn("")
+		log.Debug("")
 		log.Debug("Found Selection for: ", point)
-		log.Warn("Result Chunk: ", resultChunk)
+		log.Debug("Result Chunk: ", resultChunk)
 		// make sure we are looking at the top of the selection set next time
 		selectionSetRoot = foundSelection.SelectionSet
 
@@ -365,7 +365,7 @@ func executorFindInsertionPoints(resultLock *sync.Mutex, targetPoints []string, 
 
 		// if the type is a list
 		if selectionType.Elem != nil {
-			log.Warn("Selection should be a list")
+			log.Debug("Selection should be a list")
 			// make sure the root value is a list
 			rootList, ok := rootValue.([]interface{})
 			if !ok {
