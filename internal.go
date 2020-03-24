@@ -3,6 +3,7 @@ package gateway
 import (
 	"context"
 	"fmt"
+	"io/ioutil"
 
 	"github.com/99designs/gqlgen/graphql/introspection"
 	"github.com/mitchellh/mapstructure"
@@ -17,7 +18,9 @@ var internalSchema *ast.Schema
 
 // internalSchemaLocation is the location that functions should take to identify a remote schema
 // that points to the gateway's internal schema.
-const internalSchemaLocation = "🎉"
+const internalSchemaLocation = "http://localhost:30000/graphql"
+
+const internalSchemaFilepath = "../schema/gateway.graphql"
 
 // QueryField is a hook to add gateway-level fields to a gateway. Limited to only being able to resolve
 // an id of an already existing type in order to keep business logic out of the gateway.
@@ -311,17 +314,24 @@ func (g *Gateway) introspectDirectiveSlice(directives []introspection.Directive,
 	return result
 }
 
+func parseInternalSchema() (*ast.Schema, error) {
+	rawSchema, err := ioutil.ReadFile(internalSchemaFilepath)
+	if err != nil {
+		return internalSchema, err
+	}
+	rawSchemaString := string(rawSchema)
+
+	parsedSchema, err := graphql.LoadSchema(rawSchemaString)
+	if err != nil {
+		return internalSchema, err
+	}
+
+	return parsedSchema, nil
+}
+
 func init() {
 	// load the internal
-	schema, err := graphql.LoadSchema(`
-		interface Node {
-			id: ID!
-		}
-
-		type Query {
-			node(id: ID!): Node
-		}
-	`)
+	schema, err := parseInternalSchema()
 	if schema == nil {
 		panic(fmt.Sprintf("Syntax error in schema string: %s", err.Error()))
 	}

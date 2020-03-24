@@ -16,7 +16,6 @@ import (
 // that plan
 type Gateway struct {
 	sources        []*graphql.RemoteSchema
-	legacySource   *graphql.RemoteSchema
 	schema         *ast.Schema
 	planner        QueryPlanner
 	executor       Executor
@@ -98,7 +97,7 @@ func (g *Gateway) internalSchema() *ast.Schema {
 }
 
 // New instantiates a new schema with the required stuffs.
-func New(sources []*graphql.RemoteSchema, legacySource *graphql.RemoteSchema, configs ...Option) (*Gateway, error) {
+func New(sources []*graphql.RemoteSchema, configs ...Option) (*Gateway, error) {
 	// if there are no source schemas
 	if len(sources) == 0 {
 		return nil, errors.New("a gateway must have at least one schema")
@@ -107,7 +106,6 @@ func New(sources []*graphql.RemoteSchema, legacySource *graphql.RemoteSchema, co
 	// set any default values before we start doing stuff with it
 	gateway := &Gateway{
 		sources:        sources,
-		legacySource:   legacySource,
 		planner:        &MinQueriesPlanner{},
 		executor:       &ParallelExecutor{},
 		merger:         MergerFunc(mergeSchemas),
@@ -129,10 +127,9 @@ func New(sources []*graphql.RemoteSchema, legacySource *graphql.RemoteSchema, co
 	}
 
 	internal := gateway.internalSchema()
-	allSources := append(sources, legacySource)
 	// find the field URLs before we merge schemas. We need to make sure to include
 	// the fields defined by the gateway's internal schema
-	urls := fieldURLs(allSources, true).Concat(
+	urls := fieldURLs(sources, true).Concat(
 		fieldURLs([]*graphql.RemoteSchema{
 			{
 				URL:    internalSchemaLocation,
@@ -150,15 +147,7 @@ func New(sources []*graphql.RemoteSchema, legacySource *graphql.RemoteSchema, co
 	sourceSchemas = append(sourceSchemas, internal)
 
 	// merge them into one
-	remoteSchema, err := gateway.merger.Merge(sourceSchemas)
-	if err != nil {
-		// if something went wrong during the merge, return the result
-		return nil, err
-	}
-
-	gatewayMerger := GatewayMergerFunc(mergeGateway)
-
-	schema, err := gatewayMerger.Merge(remoteSchema, legacySource.Schema)
+	schema, err := gateway.merger.Merge(sourceSchemas)
 	if err != nil {
 		// if something went wrong during the merge, return the result
 		return nil, err

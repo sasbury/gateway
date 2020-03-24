@@ -18,7 +18,7 @@ var Schema = `
 		id: ID!
 	}
 
-	type User implements Node {
+	type RemoteUser implements Node {
 		id: ID!
 		recentPurchases: [ProductProduct]
 	}
@@ -49,16 +49,16 @@ var products = map[string]*ProductProduct{
 	},
 }
 
-type User struct {
+type RemoteUser struct {
 	id              graphql.ID
 	recentPurchases []*ProductProduct
 }
 
-func (u *User) ID() graphql.ID {
+func (u *RemoteUser) ID() graphql.ID {
 	return u.id
 }
 
-func (u *User) RecentPurchases() *[]*ProductProduct {
+func (u *RemoteUser) RecentPurchases() *[]*ProductProduct {
 	return &u.recentPurchases
 }
 
@@ -99,8 +99,8 @@ func (n *NodeResolver) ToProductProduct() (*ProductProduct, bool) {
 	return Product, ok
 }
 
-func (n *NodeResolver) ToUser() (*User, bool) {
-	user, ok := n.node.(*User)
+func (n *NodeResolver) ToRemoteUser() (*RemoteUser, bool) {
+	user, ok := n.node.(*RemoteUser)
 	return user, ok
 }
 
@@ -139,7 +139,7 @@ func (q *queryB) getProduct(id string) *ProductProduct {
 	}
 }
 
-func (q *queryB) getUser(id string) *User {
+func (q *queryB) getUser(id string) *RemoteUser {
 	productSlice := []*ProductProduct{}
 
 	if id == "u1" {
@@ -150,7 +150,7 @@ func (q *queryB) getUser(id string) *User {
 
 	log.Printf("Returning %d products for user %s\n", len(productSlice), id)
 
-	return &User{
+	return &RemoteUser{
 		id:              graphql.ID(id),
 		recentPurchases: productSlice,
 	}

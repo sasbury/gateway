@@ -212,7 +212,6 @@ func mergeObjectTypes(schema *ast.Schema, previousDefinition *ast.Definition, ne
 	for _, newField := range newDefinition.Fields {
 		// look up if we already know about this field
 		field := previousFields.ForName(newField.Name)
-		fmt.Println(newField.Name)
 
 		// if we already know about the field
 		if field != nil {
