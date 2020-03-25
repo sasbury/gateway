@@ -17,10 +17,10 @@ honey-dev startup internal-api-gateway --mode=forward
 ```
 To startup products and users test servers:
 ```bash
-cd GATEWAY_ROOT/examples/users
+cd GATEWAY_ROOT/examples/hello/users
 go run main.go
 
-cd GATEWAY_ROOT/examples/products
+cd GATEWAY_ROOT/examples/hello/products
 go run main.go
 ```
 
