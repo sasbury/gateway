@@ -14,7 +14,7 @@ var Port string
 
 func init() {
 	// add the configuration paramters for the start command
-	startCmd.Flags().StringVarP(&Port, "port", "p", "4000", "the port to listen on.")
+	startCmd.Flags().StringVarP(&Port, "port", "p", "8080", "the port to listen on.")
 
 	// add the start command to the root executable
 	rootCmd.AddCommand(startCmd)

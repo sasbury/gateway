@@ -10,7 +10,7 @@ import (
 	"github.com/nautilus/graphql"
 )
 
-const remoteSchemaDir = "../schema/remote"
+const remoteSchemaDir = "schema/remote"
 
 func ParseRemoteSchemas() ([]*graphql.RemoteSchema, error) {
 	// build up the list of remote schemas
