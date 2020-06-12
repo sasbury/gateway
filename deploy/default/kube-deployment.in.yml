@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {CONTAINER_NAME}
+  labels:
+    app: {CONTAINER_NAME}
+spec:
+  selector:
+    matchLabels:
+      app: {CONTAINER_NAME}
+  template:
+    metadata:
+      labels:
+        app: {CONTAINER_NAME}
+    spec:
+      containers:
+        - name: {CONTAINER_NAME}
+          image: 'us.gcr.io/{GCLOUD_PROJECT}/{CONTAINER_NAME}:{COMMIT_HASH}'
+          env:
+            - name: ENV
+              value: production
+            - name: LOG_LEVEL
+              value: info
+            - name: CONTAINER_NAME
+              value: {CONTAINER_NAME}
+            - name: PROJECT_VERSION
+              value: '{COMMIT_HASH}'
+            - name: GCLOUD_PROJECT
+              value: '{GCLOUD_PROJECT}'
+            - name: INTERNAL_API_URL_PRODUCTS
+              value: localhost:3000
+            - name: INTERNAL_API_URL_USERS
+              value: localhost:3001
+            - name: PORT
+              value: '8080'
+

@@ -20,7 +20,7 @@ var internalSchema *ast.Schema
 // that points to the gateway's internal schema.
 const internalSchemaLocation = "http://localhost:30000/graphql"
 
-const internalSchemaFilepath = "../schema/gateway.graphql"
+const internalSchemaFilepath = "schema/gateway.graphql"
 
 // QueryField is a hook to add gateway-level fields to a gateway. Limited to only being able to resolve
 // an id of an already existing type in order to keep business logic out of the gateway.

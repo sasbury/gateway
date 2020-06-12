@@ -1,0 +1,50 @@
+{
+  "name": "@honeyscience/gateway-go",
+  "version": "0.0.1",
+  "description": "Honey sdata raw events curator task",
+  "author": "The Honey Team",
+  "license": "UNLICENSED",
+  "homepage": "https://github.com/honeyscience/gateway-go#readme",
+  "repository": {
+    "type": "git",
+    "url": "github:honeyscience/gateway-go"
+  },
+  "bugs": {
+    "url": "https://github.com/honeyscience/gateway-go/issues"
+  },
+  "scripts": {
+    "build": "honey-build",
+    "docker-build": "docker-build",
+    "docker-push": "docker-push",
+    "kube-deploy": "kube-deploy",
+    "npm-audit": "honey-npm-audit"
+  },
+  "devDependencies": {
+    "@honeyscience/honey-dev-tools": "^6.9.0"
+  },
+  "deployment": {
+    "default": {
+      "containerName": "gateway-go",
+      "environmentVariables": [
+        "INTERNAL_API_GATEWAY_URL"
+      ],
+      "envConf": {
+        "prod": {
+          "project": "honey-production",
+          "cluster": "internal-api-a",
+          "region": "us-central1"
+        },
+        "staging": {
+          "project": "honey-staging",
+          "cluster": "internal-api-a",
+          "region": "us-central1"
+        },
+        "sandbox": {
+          "project": "honey-sandbox-core",
+          "cluster": "internal-api-a",
+          "region": "us-central1"
+        }
+      }
+    }
+  }
+}
